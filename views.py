@@ -1,4 +1,5 @@
 import json
+from sys import flags
 FILE_PATH = 'data.json'
 
 def get_data():
@@ -43,21 +44,27 @@ def get_id():
 
 def create_product():
     data = get_data()
-    
-    product = {
-        'id'   : get_id(),
-        'mark' : input('Введите марку продукта: '),
-        'model': input('Введите модель продукта: '),
-        'year' : int(input('Введите дату выпуска продукта:')),
-        'discription': input('Введите описание продукта: '),
-        'price': round(float(input('Введите цену продукта: ')), 2)
-        }
-    data.append(product)
+    try:    
+        product = {
+            'id'   : get_id(),
+            'mark' : input('Введите марку продукта: '),
+            'model': input('Введите модель продукта: '),
+            'year' : int(input('Введите дату выпуска продукта:')),
+            'discription': input('Введите описание продукта: '),
+            'price': round(float(input('Введите цену продукта: ')), 2)
+            }
 
-    with open(FILE_PATH, 'w') as file:
-        json.dump(data, file,indent=2)
-        catalog(product)
-        return 'Создан'
+    except ValueError:
+        print()
+        print('Вы ввели неверные данные!')
+        print()
+        create_product()
+    else:
+        data.append(product)
+        with open(FILE_PATH, 'w') as file:
+            json.dump(data, file,indent=2)
+            catalog(product)
+    return 'Создан'
 
 def update_product():
     data = get_data()
@@ -111,6 +118,7 @@ def delete_product():
 
     if not product:
         return 'Такого продукта нет'
+        
     index_ = data.index(product[0])
     data.pop(index_)
 
